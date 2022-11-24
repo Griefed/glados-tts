@@ -48,16 +48,16 @@ cuiParser = subparsers.add_parser('cui', help='Runs the TTS engine in an interac
 # create the parser for the "b" command
 serverParser = subparsers.add_parser('serve', help='Runs the TTS engine in a server mode.')
 serverParser.add_argument("--port", help='the port to run the server on', default=5000)
-serverParser.add_argument("--host", help='the host to run the server on', default="127.0.0.1")
+serverParser.add_argument("--host", help='the host to run the server on', default="0.0.0.0")
 
 # parser.add_argument('action', help = 'Action what should happen', choices = ['cli', 'cui', 'server'])
 
-args, unknownargs = parser.parse_known_args(['serve','--port', '5000', '--host', '0.0.0.0'])
+# args, unknownargs = parser.parse_known_args(['serve','--port', '5000', '--host', '0.0.0.0'])
 # args, unknownargs = parser.parse_known_args(['say', '-i', 'input.txt' , "Hello world", "world hello!"])
 # args, unknownargs = parser.parse_known_args(['say',"Hello world","Hello world1"])
 # args, unknownargs = parser.parse_known_args(['gen', '-o', 'output.wav', "Hello world", "Hello world1"])
 # args, unknownargs = parser.parse_known_args()
-# args = parser.parse_args(['server'])
+args = parser.parse_args()
 
 if args.action is None:
     exit()

@@ -13,7 +13,7 @@ import io
 from scipy.io.wavfile import write
 
 class TTSServer:
-    def __init__(self, engine, host = "127.0.0.1", port = 5000):
+    def __init__(self, engine, host = "0.0.0.0", port = 5000): #127.0.0.1
         self.engine = engine
         self.port = port
         self.host = host

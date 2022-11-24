@@ -11,8 +11,8 @@ services:
       - .:/src
       - ./src:/app
       - ./.vscode/extensions:/root/.vscode-server/extensions
-    working_dir: /src
-    # command: /bin/bash
+    # working_dir: /src
+    # command: python ./src/glados.py serve --port 5000 --host 0.0.0.0
     entrypoint:
     - sleep
     - infinity
