@@ -11,5 +11,5 @@ ENV AUDIO_ENABLED=false
 
 EXPOSE 5000
 
-CMD ["python", "./glados.py", 'serve','--port', '5000', '--host', '0.0.0.0'] 
+CMD ["python", "./glados.py", "serve","--port", "5000", "--host", "0.0.0.0"] 
 
