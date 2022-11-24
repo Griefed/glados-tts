@@ -1,0 +1,18 @@
+# ref https://docs.docker.com/compose/compose-file/#build
+# docker compose -f .\compose-dev.yaml up
+
+services:
+  app:
+    image: jkamsker/glados-tts:latest
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/com.docker.devenvironments.code # Docker dev env
+      - .:/src
+      - ./src:/app
+      - ./.vscode/extensions:/root/.vscode-server/extensions
+    working_dir: /src
+    # command: /bin/bash
+    entrypoint:
+    - sleep
+    - infinity
