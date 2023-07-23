@@ -1,4 +1,5 @@
 **/__pycache__/**
 *.wav
 audio/*
+output/*
 .vscode/extensions/*
