@@ -1,18 +1,13 @@
-# ref https://docs.docker.com/compose/compose-file/#build
-# docker compose -f .\compose-dev.yaml up
-
+version: '3'
 services:
-  app:
-    image: jkamsker/glados-tts:latest
+  glados:
+    container_name: glados
+    restart: unless-stopped
+    # image: jkamsker/glados-tts:latest
+    build:
+      context: ./
+      dockerfile: ./build/Dockerfile
     ports:
-      - '5000:5000'
+      - "8124:8124"
     volumes:
-      - .:/com.docker.devenvironments.code # Docker dev env
-      - .:/src
-      - ./src:/app
-      - ./.vscode/extensions:/root/.vscode-server/extensions
-    # working_dir: /src
-    # command: python ./src/glados.py serve --port 5000 --host 0.0.0.0
-    entrypoint:
-    - sleep
-    - infinity
+      - ./output:/output # Persist output cache

@@ -5,4 +5,5 @@ unidecode
 scipy
 torch
 flask
+flask-cors
 pyaudio

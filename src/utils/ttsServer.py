@@ -1,26 +1,20 @@
 import sys
-import os
 
-import torch
-from scipy.io.wavfile import write
-import time
-import hashlib
+from flask import send_file
 
-from flask import Flask, request, send_file
-import urllib.parse
-import shutil
-import io
-from scipy.io.wavfile import write
 
 class TTSServer:
-    def __init__(self, engine, host = "0.0.0.0", port = 5000): #127.0.0.1
+    def __init__(self, engine, host="0.0.0.0", port=8124):  # 127.0.0.1
         self.engine = engine
         self.port = port
         self.host = host
 
     def start(self):
         from flask import Flask, request
+        from flask_cors import CORS
+
         app = Flask(__name__)
+        CORS(app)
 
         @app.route('/generate', methods=['POST'])
         def generate():
@@ -28,12 +22,9 @@ class TTSServer:
             result = self.engine.generate(text)
             return send_file(result.asMemoryFile(), mimetype='audio/wav', as_attachment=True, download_name='audio.wav')
 
-        
         cli = sys.modules['flask.cli']
         cli.show_server_banner = lambda *x: None
         app.run(host=self.host, port=self.port)
-
-
 
 # engine = TTSEngine.TTSEngine()
 # engine.warmup()
