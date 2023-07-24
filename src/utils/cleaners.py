@@ -2,9 +2,9 @@ import re
 from typing import Dict, Any
 
 from phonemizer.phonemize import phonemize
+from unidecode import unidecode
 from utils.numbers import normalize_numbers
 from utils.symbols import phonemes_set
-from unidecode import unidecode
 
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r'\s+')
@@ -31,10 +31,12 @@ _abbreviations = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in 
     ('ft', 'fort'),
 ]]
 
+
 def expand_abbreviations(text):
     for regex, replacement in _abbreviations:
         text = re.sub(regex, replacement, text)
     return text
+
 
 def expand_units(text):
     text = text.replace("°C", "degrees selsius")
@@ -46,6 +48,7 @@ def expand_units(text):
     text = text.replace("g/m³", "grams per cubic meter")
     text = text.replace("% (RH)", "percent relative humidity")
     return text
+
 
 def collapse_whitespace(text):
     return re.sub(_whitespace_re, ' ', text)
@@ -108,4 +111,3 @@ class Cleaner:
             use_phonemes=config['preprocessing']['use_phonemes'],
             lang=config['preprocessing']['language']
         )
-

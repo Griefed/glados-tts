@@ -1,30 +1,20 @@
-import os
 import argparse
-import hashlib
 
-import sys
-import os
-import torch
 import utils.tools as tools
-from scipy.io.wavfile import write
-import time
-import hashlib
 import utils.ttsEngine as TTSEngine
 import utils.ttsServer as TTSServer
-import wave
-
 
 parser = argparse.ArgumentParser(
-                    prog = 'ProgramName',
-                    description = 'What the program does',
-                    epilog = 'Text at the bottom of help')
+    prog='ProgramName',
+    description='What the program does',
+    epilog='Text at the bottom of help')
 
 # Contains multiple actions: ['cli', 'cui', 'server']
 subparsers = parser.add_subparsers(dest='action', help='sub-command help')
 
 # create the parser for the "a" command
 sayParser = subparsers.add_parser(
-    'say', 
+    'say',
     allow_abbrev=True,
     help='Generates spoken audio from text and outputs it to an audio device'
 )
@@ -47,12 +37,12 @@ cuiParser = subparsers.add_parser('cui', help='Runs the TTS engine in an interac
 
 # create the parser for the "b" command
 serverParser = subparsers.add_parser('serve', help='Runs the TTS engine in a server mode.')
-serverParser.add_argument("--port", help='the port to run the server on', default=5000)
+serverParser.add_argument("--port", help='the port to run the server on', default=8124)
 serverParser.add_argument("--host", help='the host to run the server on', default="0.0.0.0")
 
 # parser.add_argument('action', help = 'Action what should happen', choices = ['cli', 'cui', 'server'])
 
-# args, unknownargs = parser.parse_known_args(['serve','--port', '5000', '--host', '0.0.0.0'])
+# args, unknownargs = parser.parse_known_args(['serve','--port', '8124', '--host', '0.0.0.0'])
 # args, unknownargs = parser.parse_known_args(['say', '-i', 'input.txt' , "Hello world", "world hello!"])
 # args, unknownargs = parser.parse_known_args(['say',"Hello world","Hello world1"])
 # args, unknownargs = parser.parse_known_args(['gen', '-o', 'output.wav', "Hello world", "Hello world1"])
@@ -69,7 +59,6 @@ engine.warmup()
 # exit()
 
 print("Action: " + args.action)
-
 
 if args.action == 'serve':
     print("Port: " + str(args.port))
@@ -88,18 +77,14 @@ elif args.action == 'generate' or args.action == 'gen':
 
     sayText = tools.getInputText(args)
     print("Generate: " + sayText)
-    engine.generate(sayText).save(args.output)
+    engine.generate(sayText).save()
 
 elif args.action == 'cui':
-    while(1):
+    while (1):
         text = input("Input: ")
         result = engine.generate(text)
         print(result)
         result.play()
-
-
-
-
 
 # GlaDos say: Generates a glados voice audio from the given text and plays it back.
 # GlaDos gen: Generates a glados voice audio from the given text and saves it to the given file.

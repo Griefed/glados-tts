@@ -1,6 +1,9 @@
-import torch
+import hashlib
 import os
+from pathlib import Path
 
+import torch
+from scipy.io.wavfile import write
 from utils.cleaners import Cleaner
 from utils.tokenizer import Tokenizer
 
@@ -45,30 +48,42 @@ def configureEspeak():
         os.environ['PHONEMIZER_ESPEAK_PATH'] = 'C:\Program Files\eSpeak NG\espeak-ng.exe'
 
 
-def warmupTorch(glados, device, vocoder, count = 1):
+def warmupTorch(glados, device, vocoder, count=1):
     for i in range(count):
         init = glados.generate_jit(prepare_text(str(1)))
         init_mel = init['mel_post'].to(device)
         init_vo = vocoder(init_mel)
 
 
-def getOutputFile():
+def md5encoded(text):
+    md5 = hashlib.md5()
+    utf = text.encode('utf-8')
+    md5.update(utf)
+    unique: str = md5.hexdigest()
+    return unique
+
+
+def getOutputFile(key) -> Path:
+    return Path("%s%s.wav" % (getParent(), key))
+
+
+def storeOutputFile(audio, key):
+    output_file = "%s%s.wav" % (getParent(), key)
+    write(output_file, 22050, audio)
+    return output_file
+
+
+def getParent():
     parent = ''
     if os.environ.get('OUTPUT_DIRECTORY') is not None:
         parent = os.environ.get('OUTPUT_DIRECTORY') + '/'
     else:
-        parent = 'audio/'
+        parent = '/output/'
 
-    # os.path.mkdir(parent, exist_ok=True)
     os.makedirs(parent, exist_ok=True)
 
-    i = 0
-    while os.path.exists(parent + "output%s.wav" % i):
-        i += 1
+    return parent
 
-    output = parent + "output%s.wav" % i
-
-    return (parent + "output.wav", output)
 
 def getDevice():
     if torch.is_vulkan_available():
@@ -78,21 +93,20 @@ def getDevice():
     else:
         return 'cpu'
 
+
 def loadModels(device):
     glados = loadJit('models/glados.pt', 'glados_tts/models/glados.pt')
     vocoder = loadJit('models/vocoder-gpu.pt', 'glados_tts/models/vocoder-gpu.pt', device)
     return (glados, vocoder)
 
-def loadJit(path, alternatePath, device = None):
+
+def loadJit(path, alternatePath, device=None):
     if os.path.exists(path):
         return torch.jit.load(path, map_location=device)
     elif os.path.exists(alternatePath):
         return torch.jit.load(alternatePath, map_location=device)
     else:
         print("Could not find model.")
-
-
-
 
     # def load(self):
     #     with open(self.path, 'r') as f:
@@ -114,6 +128,7 @@ def loadJit(path, alternatePath, device = None):
     #     with open(self.path, 'w') as f:
     #         for key, value in self.config.items():
     #             f.write(f'{key}={value}
+
 
 def getInputText(args):
     if args.input:
